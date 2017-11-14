@@ -3,27 +3,29 @@
 # Building the angular app for distribution with the container
 
 1. 
-``` 
+``` bash
   $ ng install
+```
 2. 
 ``` 
   $ ng build
-
+```
 # Boot strapping the container with docker-compose
 
 1. 
 ``` 
   $ docker-compose up -d
-
+```
 # Building and running httpd from the command line
 
 1. 
 ``` 
   $ docker build .
+```
 2. 
 ``` 
   $ docker run -dit --name sample-ng-app  -p 8080:80 -v "$PWD/sample-app/dist":/usr/local/apache2/htdocs httpd:2.4
-
+```
 
 # Configuring our Httpd 
 
