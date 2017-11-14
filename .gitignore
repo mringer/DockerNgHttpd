@@ -1,0 +1,10 @@
+# Ignoring python's compiled files
+**/*.pyc
+**/__pycache__
+**/*egg*
+**/sampledata/
+**/.DS_Store
+# Ignoring non-binary output from RobotFramework
+DocParser/**/output.xml
+DocParser/**/log.html
+DocParser/**/report.html
