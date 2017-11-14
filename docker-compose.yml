@@ -1,0 +1,8 @@
+# Serve ngApp as static files
+version: '3.2'
+services:
+  webapp:
+    build: 
+      context: ./
+    ports:
+      - "80:80"
