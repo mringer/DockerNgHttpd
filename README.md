@@ -88,7 +88,7 @@ Note: by default Containers will not retain changes to their filesystem when sto
 
 Now that we've configured our image. Docker offers two paths to go about building and running an image as a container and we'll briefly look at them both here.
 
-## Building the image and running the container with the docker command.
+# Building the image and running the container with the docker command.
 
 Now we're just two commands away from having a running instance of our server. First we'll need to build our container. From our repo root we can call docker build like this.
 ``` 
@@ -102,7 +102,7 @@ You should see docker working in the terminal, what it's doing is downloading al
 Once docker build is completes the only thing left to do is run our image as a container, with the docker run command. Docker run offers a variety of command flags that allow us to set important options at run time. Let's take the following command.
 
 ```
-  $ docker run -dit --name sample-ng-app  -p 8080:80 -v "$PWD/sample-app/dist":/usr/local/apache2/htdocs ng_httpd
+  $ docker run -dit --name sample-ng-app  -p 8080:80 -v `pwd`/sample-app/dist:/usr/local/apache2/htdocs ng_httpd
 ```
 
 Here is a brief rundown of the important flags. 
@@ -124,12 +124,36 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 539dabe9564c        ng_httpd            "httpd-foreground"       5 seconds ago       Up 4 seconds        0.0.0.0:8080->80/tcp     sample-ng-app
 ```
 
-## Building the container
-We have two possible options for building and running our container, either building and running out container with the docker command, or using a docker-compose.yml file and docker-compose to script the build. Either option will achieve the same outcome, docker-compose is handy in cases where we need to orchestrate several linked containers with various container settings that would be cumbersome to notate in a sequence of docker commands. Docker compose takes case of ensuring that each containers dependencies are brought up before running the container. You can read more about docker-compose [here](https://docs.docker.com/compose/overview/).
+# Building the container
+I mentioned that we have two possible options for building and running our container, either building and running out container with the docker command as we just did, or using a docker-compose.yml file and docker-compose to script the build. Either option will achieve the same outcome, docker-compose however is particularly handy in cases where we need to orchestrate several containers and their runtime settings, to an extent that would be cumbersome to notate in a sequence of docker commands. Docker compose takes case of ensuring that each containers dependencies are brought up before running the container. You can read more about docker-compose [here](https://docs.docker.com/compose/overview/).
 
 With docker-compose a single command and our container will be up and running and serving our app.
+
+Lets take a quick look at the docker-compose.yml to do this.
+
+For this since instance the settings are fairly simple. Version specifies the version of docker-compose syntax we are using. The services section defines the containers in our deployment, in this case we only have one, 'webapp'. The build settings define build time settings, in this case setting the pwd to ou current dir. Finally we can override runtime settings as we would on the command line, in this case ports where we map the public port 80 to the port exposed inside the container. While this is a trivial example, it should be clear how this would allow us to orchestrate more complex stacks from a configuration file that is easy to share and version.
+
+```
+version: '3.2'
+services:
+  webapp:
+    build: 
+      context: ./
+    ports:
+      - "80:80"
+```
 
 # Boot strapping the container with docker-compose
 ``` 
   $ docker-compose up -d
 ```
+
+Again if we use docker ps to check our running containers we can see that our instance is running. Docker will derive the names for our image and container based on the path.
+
+```
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+4981694f3424        nghttpd_webapp      "httpd-foreground"       8 seconds ago       Up 6 seconds        0.0.0.0:80->80/tcp       nghttpd_webapp_1
+```
+
+That's it, we've demonstrated how docker can help us make common DevOps tasks more repeatable and reliable.
